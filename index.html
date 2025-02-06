@@ -39,6 +39,9 @@
             font-size: 20px;
             margin-top: 20px;
         }
+        .share-btn {
+            background-color: #28a745;
+        }
     </style>
 </head>
 <body>
@@ -46,7 +49,7 @@
         <h1>😂 Random Jokes Generator</h1>
         <p class="joke">Click the button to get a joke!</p>
         <button onclick="getJoke()">Get a Joke</button>
-        <button onclick="shareJoke()" style="background-color: #28a745;">Share</button>
+        <button onclick="shareJoke()" class="share-btn">Share</button>
     </div>
     
     <script>
@@ -56,18 +59,28 @@
             
             let jokeText = "";
             if (data.type === "twopart") {
-                jokeText = `${data.setup} <br> <strong>${data.delivery}</strong>`;
+                jokeText = `${data.setup} \n ${data.delivery}`;
             } else {
                 jokeText = data.joke;
             }
             
-            document.querySelector(".joke").innerHTML = jokeText;
+            document.querySelector(".joke").innerText = jokeText;
         }
         
         function shareJoke() {
             const jokeText = document.querySelector(".joke").innerText;
-            const shareUrl = "https://sharjeelac.github.io/jokes-generator/"; // Share link placeholder
-            alert(`Share this joke: \n${jokeText}\n\nLink: ${shareUrl}`);
+            const shareUrl = "https://sharjeelac.github.io/jokes-generator/";
+
+            if (navigator.share) {
+                navigator.share({
+                    title: "😂 Funny Joke!",
+                    text: jokeText,
+                    url: shareUrl
+                }).then(() => console.log('Shared successfully'))
+                .catch((error) => console.log('Error sharing:', error));
+            } else {
+                alert("Your browser doesn't support sharing. Copy this link: " + shareUrl);
+            }
         }
     </script>
 </body>
